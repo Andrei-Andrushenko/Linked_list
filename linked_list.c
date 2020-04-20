@@ -1,5 +1,6 @@
 #include "list.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 // В узле списка хранится само значение value и указатель на следующий узел.
 // Эту структуру пользователи списка не должны видеть, так как она относится к внутренней реализации.
@@ -45,7 +46,7 @@ void Append(List *this, int value) {
     Node* tmp=malloc(sizeof(Node));
     tmp->value=value;
     tmp->next=NULL;
-    (this->head)->next=tmp;
+    (this->tail)->next=tmp;
     this->tail=tmp;
 }
 void Prepend(List *this, int value) {
@@ -63,13 +64,18 @@ void Prepend(List *this, int value) {
     this->head=tmp;
 }
 void AppendAll(List *this, const List *that) {
-    this->tail->next=that->head;
-    this->tail=that->tail;
+    for (int i=0; i<Length(that); i++) {
+        Append(this, GetAt(that, i));
+    }
 }
 
 void InsertAt(List *this, int index, int value) {
-    Node* ptr=this->head;
+    if (index+1>Length(this)) {
+        printf("ERROR: segmentation fault");
+        exit(-1);
+    }
     int c=0;
+    Node* ptr=this->head;
     while (c!=index) {
         ptr=ptr->next;
         c++;
@@ -81,13 +87,11 @@ void InsertAt(List *this, int index, int value) {
 }
 
 void RemoveAt(List *this, int index) {
-    Node* tmp=this->head;
     if (index==0) {
-        this->head=this->head->next;
-        tmp->next=NULL;
-        free(tmp);
+        Dequeue(this);
         return;
     }
+    Node* tmp=this->head;
     Node* ptr=NULL;
     int c=0;
     while (c!=index) {
@@ -112,24 +116,21 @@ void RemoveAll(List *this) {
 }
 
 int Pop(List *this) {
-    int c=Length(this);
-    int a;
     Node* ptr=this->head;
-    for (int i=0; i<c-1; i++) {
+    for (int i=0; i<Length(this)-1; i++) {
         this->tail=ptr;
         ptr=ptr->next;
     }
     this->tail->next=NULL;
-    a=ptr->value;
+    int a=ptr->value;
     free(ptr);
     return a;
 }
 int Dequeue(List *this) {
-    int a;
     Node* tmp=this->head;
     this->head=this->head->next;
     tmp->next=NULL;
-    a=tmp->value;
+    int a=tmp->value;
     free(tmp);
     return a;
 }
@@ -137,9 +138,6 @@ int Dequeue(List *this) {
 int Length(const List *this) {
     int c=0;
     Node* tmp=this->head;
-    if (this->head==NULL) {
-        return 0;
-    }
     while (tmp!=NULL) {
         tmp=tmp->next;
         c++;
@@ -148,7 +146,8 @@ int Length(const List *this) {
 }
 int GetAt(const List *this, int index) {
     if (index+1>Length(this)) {
-        return -1;
+        printf("ERROR: segmentation fault");
+        exit(-1);
     }
     int c=0;
     Node* tmp=this->head;
