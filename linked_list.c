@@ -35,14 +35,14 @@ void DestroyList(List* this) {
 
 void Append(List *this, int value) {
     if (this->head==NULL) {
-        Node* tmp=malloc(sizeof(Node*));
+        Node* tmp=malloc(sizeof(Node));
         tmp->value=value;
         tmp->next=NULL;
         this->head=tmp;
         this->tail=tmp;
         return;
     }
-    Node* tmp=malloc(sizeof(Node*));
+    Node* tmp=malloc(sizeof(Node));
     tmp->value=value;
     tmp->next=NULL;
     (this->head)->next=tmp;
@@ -50,14 +50,14 @@ void Append(List *this, int value) {
 }
 void Prepend(List *this, int value) {
     if (this->head==NULL) {
-        Node* tmp=malloc(sizeof(Node*));
+        Node* tmp=malloc(sizeof(Node));
         tmp->value=value;
         tmp->next=NULL;
         this->head=tmp;
         this->tail=tmp;
         return;
     }
-    Node* tmp=malloc(sizeof(Node*));
+    Node* tmp=malloc(sizeof(Node));
     tmp->value=value;
     tmp->next=this->head;
     this->head=tmp;
@@ -74,7 +74,7 @@ void InsertAt(List *this, int index, int value) {
         ptr=ptr->next;
         c++;
     }
-    Node* tmp=malloc(sizeof(Node*));
+    Node* tmp=malloc(sizeof(Node));
     tmp->value=value;
     tmp->next=ptr->next;
     ptr->next=tmp;
